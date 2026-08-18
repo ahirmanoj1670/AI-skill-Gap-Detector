@@ -1,6 +1,6 @@
+import { authAPI } from "../api";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { Sparkles, Brain, Lock, AlertCircle } from "lucide-react";
 
 export default function Login() {
@@ -11,34 +11,46 @@ export default function Login() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!email || !password) {
-      setError("Please fill in all credential fields.");
-      return;
-    }
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    setLoading(true);
-    setError("");
+  if (!email || !password) {
+    setError("Please fill in all credential fields.");
+    return;
+  }
 
-    const path = isRegistering ? "/api/auth/register" : "/api/auth/login";
+  setLoading(true);
+  setError("");
 
-    try {
-      const response = await axios.post(path, { email, password });
-      
-      // Save backend responses
-      const { access_token, user_id } = response.data;
-      localStorage.setItem("sg_token", access_token);
-      localStorage.setItem("sg_email", email);
-      localStorage.setItem("sg_uid", user_id);
+  try {
+    const response = isRegistering
+      ? await authAPI.register({
+          email,
+          password,
+        })
+      : await authAPI.login({
+          email,
+          password,
+        });
 
-      navigate("/dashboard");
-    } catch (err) {
-      setError(err.response?.data?.detail || "Authentication error occurred, please verify inputs.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const { access_token, user_id } = response;
+
+    localStorage.setItem("sg_token", access_token);
+    localStorage.setItem("sg_email", email);
+    localStorage.setItem("sg_uid", String(user_id));
+
+    navigate("/dashboard");
+  } catch (err) {
+    console.error("Authentication error:", err);
+
+    setError(
+      err.response?.data?.detail ||
+      "Authentication error occurred, please verify inputs."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
