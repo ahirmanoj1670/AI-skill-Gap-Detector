@@ -19,17 +19,11 @@ app = FastAPI(
 # Configure CORS Middleware for decoupled React communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://ai-skill-gap-detector-git-main-mc-3.vercel.app",
-        "https://ai-skill-gap-detector.vercel.app",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-    ],
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 # Connect subroutes
 app.include_router(resume.router)
 app.include_router(jd.router)
