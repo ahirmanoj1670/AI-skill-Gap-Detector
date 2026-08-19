@@ -40,14 +40,23 @@ const handleSubmit = async (e) => {
     localStorage.setItem("sg_uid", String(user_id));
 
     navigate("/dashboard");
-  } catch (err) {
-    console.error("Authentication error:", err);
+  } 
+  catch (err) {
+  const detail = err.response?.data?.detail;
 
+  if (Array.isArray(detail)) {
     setError(
-      err.response?.data?.detail ||
-      "Authentication error occurred, please verify inputs."
+      detail
+        .map((item) => item.msg)
+        .join(", ")
     );
-  } finally {
+  } else {
+    setError(
+      detail || "Authentication error occurred, please verify inputs."
+    );
+  }
+  } 
+  finally {
     setLoading(false);
   }
 };
