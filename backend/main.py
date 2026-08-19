@@ -20,6 +20,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
+        "https://ai-skill-gap-detector-git-main-mc-3.vercel.app",
         "https://ai-skill-gap-detector.vercel.app",
         "http://localhost:3000",
     ],
