@@ -19,7 +19,10 @@ app = FastAPI(
 # Configure CORS Middleware for decoupled React communication
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://ai-skill-gap-detector.vercel.app",
+        "http://localhost:3000",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
